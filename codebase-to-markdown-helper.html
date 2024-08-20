@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Codebase to Markdown Helper</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 5px;
+            margin-top: 5px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        #command {
+            background-color: #f4f4f4;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-top: 20px;
+            word-wrap: break-word;
+        }
+        .button-container {
+            display: flex;
+            justify-content: flex-start;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Codebase to Markdown Helper</h1>
+    <p>This tool helps you generate the correct command to run the codebase_to_markdown.py script.</p>
+    
+    <label for="scriptPath">Path to codebase_to_markdown.py:</label>
+    <input type="text" id="scriptPath" placeholder="e.g., C:\path\to\codebase_to_markdown.py">
+    
+    <label for="codebasePath">Path to your codebase:</label>
+    <input type="text" id="codebasePath" placeholder="e.g., C:\path\to\your\codebase">
+    
+    <label for="outputPath">Path for output markdown file:</label>
+    <input type="text" id="outputPath" placeholder="e.g., C:\path\to\output\knowledge_base.md">
+    
+    <label for="ignoreDirs">Directories to ignore (comma-separated):</label>
+    <input type="text" id="ignoreDirs" placeholder="e.g., build,dist">
+    
+    <label for="ignoreFiles">Files to ignore (comma-separated):</label>
+    <input type="text" id="ignoreFiles" placeholder="e.g., README.md,LICENSE">
+    
+    <button onclick="generateCommand()">Generate Command</button>
+    
+    <div id="command"></div>
+    
+    <div class="button-container">
+        <button onclick="copyToClipboard()">Copy to Clipboard</button>
+        <button onclick="resetForm()">Reset</button>
+    </div>
+    
+    <script>
+        function generateCommand() {
+            const scriptPath = document.getElementById('scriptPath').value.trim();
+            const codebasePath = document.getElementById('codebasePath').value.trim();
+            const outputPath = document.getElementById('outputPath').value.trim();
+            const ignoreDirs = document.getElementById('ignoreDirs').value.trim();
+            const ignoreFiles = document.getElementById('ignoreFiles').value.trim();
+            
+            let command = `python ${scriptPath} -d "${codebasePath}" -m "${outputPath}"`;
+            
+            if (ignoreDirs) {
+                command += ` --ignore-dirs ${ignoreDirs.split(',').map(dir => `"${dir.trim()}"`).join(' ')}`;
+            }
+            
+            if (ignoreFiles) {
+                command += ` --ignore-files ${ignoreFiles.split(',').map(file => `"${file.trim()}"`).join(' ')}`;
+            }
+            
+            document.getElementById('command').innerText = command;
+        }
+
+        function copyToClipboard() {
+            const commandText = document.getElementById('command').innerText;
+            if (commandText) {
+                navigator.clipboard.writeText(commandText).then(function() {
+                    alert('Command copied to clipboard!');
+                }, function(err) {
+                    console.error('Could not copy text: ', err);
+                });
+            } else {
+                alert('Please generate a command first.');
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('scriptPath').value = '';
+            document.getElementById('codebasePath').value = '';
+            document.getElementById('outputPath').value = '';
+            document.getElementById('ignoreDirs').value = '';
+            document.getElementById('ignoreFiles').value = '';
+            document.getElementById('command').innerText = '';
+        }
+    </script>
+</body>
+</html>
